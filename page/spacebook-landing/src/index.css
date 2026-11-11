@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* SpaceBook "Night Navy" theme: Pitt navy + gold from frontend/src/index.css,
+   laid out like the CommonGround landing page. */
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-navy-900: #00173F;
+  --color-navy-850: #001A4A;
+  --color-navy-800: #001F57;
+  --color-gold: #FFB81C;
+  --color-gold-dark: #F59E0B;
+  --color-gold-ink: #1A1200;
+
+  /* Text on navy-900; text-3 still holds ≥4.5:1 (WCAG 1.4.3). */
+  --color-text-1: #FFFFFF;
+  --color-text-2: #C9D3E6;
+  --color-text-3: #94A3C0;
+
+  --color-card: rgba(255, 255, 255, 0.05);
+  --color-line: rgba(255, 255, 255, 0.11);
+
+  --color-ok-bg: #E7F6EE;
+  --color-ok-fg: #13703F;
+  --color-warn-bg: #FEF3E2;
+  --color-warn-fg: #93570A;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-navy-900 text-text-1 antialiased;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  letter-spacing: -0.015em;
+}
+
+/* Keyboard focus indicator for every focusable element (WCAG 2.4.7). */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Keep long visually-hidden text (e.g. the hero preview's figcaption) out of
+   the scroll width at 320px (WCAG 1.4.10), as in frontend/src/index.css. */
+@layer utilities {
+  .sr-only:not(:focus):not(:focus-within) {
+    left: 0;
+  }
+}
+
+/* Background treatments */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255, 184, 28, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 184, 28, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.glow-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn {
+  @apply inline-flex items-center gap-2 rounded-xl px-[22px] py-3 text-[15px] font-semibold no-underline transition-transform hover:-translate-y-px;
+}
+
+.btn-gold {
+  @apply bg-gold text-gold-ink;
+  box-shadow: 0 6px 24px rgba(255, 184, 28, 0.28);
+}
+
+.btn-ghost {
+  @apply border border-line bg-card text-text-1;
+}
+
+/* Scroll-in reveal, toggled by <Reveal>. */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.45s ease-out;
+}
+
+/* Honour the OS "reduce motion" setting (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

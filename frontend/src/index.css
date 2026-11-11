@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Canvas + surfaces (redesign: warm-cool off-white, hairline borders) */
+  --color-offwhite: #F5F6F9;
+  --color-canvas: #F5F6F9;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #FBFCFE;
+  --color-hairline: #E8EBF1;
+  --color-hairline-strong: #DDE2EC;
+  /* Form-control borders: WCAG 1.4.11 needs ≥3:1 against the surrounding
+     surface, which hairline-strong (1.3:1) can't give. */
+  --color-field: #7D8697;
+
+  /* Ink scale (near-black → faint). ink-3/ink-4 are text colors, so both
+     hold ≥4.5:1 (WCAG 1.4.3) on every surface and status-tint background. */
+  --color-ink: #101827;
+  --color-ink-2: #3A4457;
+  --color-ink-3: #525B6C;
+  --color-ink-4: #616A7C;
+
+  /* Brand — Pitt navy + gold (unchanged) */
+  --color-primary-50: #EFF3FA;
+  --color-primary-100: #DCE6F5;
+  --color-primary-200: #B0C7E7;
+  --color-primary-300: #7FA3D6;
+  --color-primary-400: #3F6DB8;
+  --color-primary-500: #14468F;
+  --color-primary-600: #003594;
+  --color-primary-700: #002A75;
+  --color-primary-800: #001F57;
+  --color-primary-900: #00173F;
+  --color-accent: #FFB81C;
+  --color-accent-content: #1A1200;
+
+  /* Soft status tokens (tinted bg + colored fg); each fg is ≥4.5:1 on its bg. */
+  --color-ok-bg: #E7F6EE;
+  --color-ok-fg: #13703F;
+  --color-warn-bg: #FEF3E2;
+  --color-warn-fg: #93570A;
+  --color-info-bg: #E9F1FD;
+  --color-info-fg: #2B5F9E;
+  --color-err-bg: #FDEBEB;
+  --color-err-fg: #B4312A;
+  --color-neu-bg: #EEF0F4;
+  --color-neu-fg: #5A6472;
+}
+
+body {
+  @apply bg-canvas text-ink min-h-screen antialiased;
+  font-family: var(--font-sans);
+}
+
+/* A native <select> sizes itself to its longest option (e.g. a long room
+   name), which can push a filter bar past a 320px viewport (WCAG 1.4.10). */
+select {
+  max-width: 100%;
+}
+
+/* Slightly tighter tracking on headings, matching the redesigned mockups. */
+h1, h2, h3 {
+  letter-spacing: -0.015em;
+}
+
+/* Keyboard focus indicator for every focusable element (WCAG 2.4.7). Many
+   controls set `focus:outline-none` for their own mouse-focus ring; this
+   :focus-visible outline overrides that so keyboard focus is never invisible. */
+:focus-visible {
+  outline: 2px solid var(--color-primary-500) !important;
+  outline-offset: 2px;
+}
+.bg-primary-900 :focus-visible,
+.bg-primary-800 :focus-visible {
+  outline-color: var(--color-accent) !important;
+}
+
+/* Honour the OS "reduce motion" setting (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visually-hidden text is position:absolute, so it sits at its static
+   position — inside a wide or truncated row that can be far to the right,
+   giving <main> a phantom horizontal scrollbar at 320px (WCAG 1.4.10).
+   Pinning it to the containing block's left edge keeps it out of the scroll
+   width; its vertical position is untouched, so screen readers that scroll
+   to the reading position still land in the right place. */
+@layer utilities {
+  .sr-only:not(:focus):not(:focus-within) {
+    left: 0;
+  }
+}

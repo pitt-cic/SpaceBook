@@ -1,0 +1,5 @@
+boto3~=1.42.0
+pytest~=9.0.0
+moto[dynamodb,cognitoidp]~=5.2
+# notify/calendar_invite.py, imported by test_calendar_invite.py and others.
+icalendar~=7.3
