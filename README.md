@@ -43,7 +43,11 @@ services for about $7–9 a month.
 
 # Demo
 
-https://github.com/user-attachments/assets/3bb3ff1e-e35c-42da-b309-180df9037113
+
+
+https://github.com/user-attachments/assets/32eb4793-24f7-460b-8b90-98b7df1b80b5
+
+
 
 <!-- https://github.com/user-attachments/assets/[asset-id] -->
 
