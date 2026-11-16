@@ -145,8 +145,11 @@ build_package() {
 
 # Bootstrap CDK
 bootstrap_cdk() {
+    local context_args="$1"
     print_info "Bootstrapping CDK..."
-    npx cdk bootstrap
+    # bootstrap synthesizes bin/app.ts, which requires the same context as deploy
+    # shellcheck disable=SC2086 # context_args is intentionally word-split
+    npx cdk bootstrap $context_args
     print_success "CDK bootstrap complete"
 }
 
@@ -370,7 +373,7 @@ main() {
 
     # Bootstrap CDK (unless skipped)
     if [[ "$skip_bootstrap" == false ]]; then
-        bootstrap_cdk
+        bootstrap_cdk "$context_args"
         echo ""
     else
         print_info "Skipping CDK bootstrap (--skip-bootstrap flag)"

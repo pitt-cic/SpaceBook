@@ -142,7 +142,7 @@ For full setup, deployment, and local development instructions, see the [Develop
 --ses-sender-email EMAIL  SES-verified From address (otherwise reused from the stack or prompted for)
 --branch NAME             Amplify branch to deploy (default: main)
 --skip-bootstrap          Skip CDK bootstrap (after the first deploy in an account/region)
---require-approval LEVEL  never, any-change, or broadening (default: broadening)
+--require-approval LEVEL  never, any-change, or broadening (default: broadening, or never with --yes)
 --skip-build              Deploy the existing frontend/dist/ without rebuilding
 --no-wait                 Don't wait for the Amplify deployment to finish
 --infra-only              Deploy infrastructure only

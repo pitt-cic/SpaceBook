@@ -58,13 +58,14 @@ Options:
                             infra/.env), then the existing stack's value, then a prompt
   --branch NAME             Amplify branch to deploy (default: main)
   --skip-bootstrap          Skip CDK bootstrap (use after first deploy)
-  --require-approval LEVEL  CDK approval level (default: broadening)
-                            Values: never, any-change, broadening
+  --require-approval LEVEL  CDK approval level (default: broadening, or never
+                            with --yes). Values: never, any-change, broadening
   --skip-build              Skip frontend build, deploy existing frontend/dist/
   --no-wait                 Don't wait for the Amplify deployment to finish
   --infra-only              Deploy infrastructure only, skip frontend
   --frontend-only           Deploy frontend only (infra must already exist)
-  --yes / -y                Skip all confirmation prompts
+  --yes / -y                Skip all confirmation prompts (including CDK's
+                            IAM-change approval unless --require-approval is set)
   --help                    Show this help message
 
 Examples:
@@ -287,7 +288,7 @@ main() {
     local ses_sender_email=""
     local branch_name="$DEFAULT_BRANCH"
     local skip_bootstrap=false
-    local require_approval="$DEFAULT_APPROVAL"
+    local require_approval=""
     local skip_build=false
     local no_wait=false
     local infra_only=false
@@ -336,6 +337,16 @@ main() {
                 exit 1 ;;
         esac
     done
+
+    # --yes means no prompts at all, including CDK's IAM-change approval
+    # (which otherwise fails without a TTY); an explicit --require-approval wins.
+    if [[ -z "$require_approval" ]]; then
+        if [[ "$skip_confirm" == true ]]; then
+            require_approval="never"
+        else
+            require_approval="$DEFAULT_APPROVAL"
+        fi
+    fi
 
     if [[ "$infra_only" == true && "$frontend_only" == true ]]; then
         print_error "--infra-only and --frontend-only are mutually exclusive."
