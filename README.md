@@ -1,5 +1,7 @@
 # SpaceBook
 
+**Landing page:** [pitt-cic.github.io/SpaceBook](https://pitt-cic.github.io/SpaceBook/)
+
 | Index                         | Description                                         |
 |:------------------------------|:----------------------------------------------------|
 | [Overview](#overview)         | See what this project does and its key capabilities |
@@ -117,23 +119,39 @@ For full setup, deployment, and local development instructions, see the [Develop
 
 ## Quick Start
 
-1. Install the prerequisites: Node.js 24, Python 3.13, and the AWS CLI (Docker is optional)
+1. Install the prerequisites: Node.js 24, Python 3.13 (for `pip3`), the AWS CLI, `zip`, and `curl`
+   (Docker is optional; it's only used if `pip3` isn't available)
 2. Configure AWS credentials (`aws configure` or `aws configure sso`) and verify an SES sender email
    (the deploy script asks for it the first time you deploy a stack)
-3. Deploy the infrastructure:
+3. Deploy everything (infrastructure, then frontend) with one command from the repo root:
 
    ```bash
-   cd infra
-   npm run deploy -- --stage-name prod        # or: --stage-name dev --dev-name <yourname>
+   ./deploy.sh                       # production (asks for confirmation)
+   ./deploy.sh --dev <yourname>      # your personal dev stack
    ```
 
-4. Deploy the frontend:
+   The script checks prerequisites, confirms your AWS identity, deploys the CDK stack, builds the frontend
+   against the stack's outputs, uploads it to Amplify, and prints the app URL.
 
-   ```bash
-   cd ../frontend
-   npm install
-   npm run deploy -- --stage-name prod        # prints the app URL when done
-   ```
+### deploy.sh options
+
+```plaintext
+--dev NAME                Developer name (required for dev/beta stages)
+--stage STAGE             dev, beta, or prod (default: prod, or dev when --dev is given)
+--profile NAME            AWS CLI profile name
+--ses-sender-email EMAIL  SES-verified From address (otherwise reused from the stack or prompted for)
+--branch NAME             Amplify branch to deploy (default: main)
+--skip-bootstrap          Skip CDK bootstrap (after the first deploy in an account/region)
+--require-approval LEVEL  never, any-change, or broadening (default: broadening)
+--skip-build              Deploy the existing frontend/dist/ without rebuilding
+--no-wait                 Don't wait for the Amplify deployment to finish
+--infra-only              Deploy infrastructure only
+--frontend-only           Deploy frontend only (infrastructure must already exist)
+--yes / -y                Skip confirmation prompts
+```
+
+To deploy the pieces separately, run `npm run deploy` in `infra/` and then in `frontend/` (see the
+[Developer Guide](DEVELOPER_GUIDE.md)).
 
 Calendar invites are off by default. See [Calendar Invites](DEVELOPER_GUIDE.md#calendar-invites-optional) to turn
 them on.
@@ -142,7 +160,7 @@ them on.
 
 # Usage
 
-1. **Access the Application**: The frontend deploy script prints the app URL. The public request form is at `/`,
+1. **Access the Application**: `deploy.sh` prints the app URL. The public request form is at `/`,
    and staff sign in at `/login`.
 
 2. **Create the First Admin**: Create a user in the staff Cognito pool and add them to the `admin` group (see the
